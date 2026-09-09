@@ -4,17 +4,10 @@
   ------------------------------------------------------------------
   의존성 없음. 이 파일 하나로 동작합니다 (글꼴만 Google Fonts에서 받아옴).
 
-  띄우는 법
-    로컬  : python3 -m http.server 8000  →  http://localhost:8000/scanner.html
-    배포  : GitHub Pages / Netlify / Vercel 등 정적 호스팅에 그대로 업로드
-    ※ 아이폰 카메라를 쓰려면 https 또는 localhost여야 합니다.
 
   파이프라인
     촬영 → 2000px 축소 → detectQuad() 테두리 검출 → warp() 원근 보정
          → applyMode() 톤 보정 → JPEG → buildPdf() → savePdf() 저장
-
-  PDF 저장 경로 (savePdf에서 순서대로 시도)
-    1. Claude 아티팩트의 downloads 기능  2. navigator.share 공유 시트  3. <a download>
 
   손댈 만한 곳
     detectQuad()  검출 정확도. 흰 배경 위 흰 종이가 가장 어려운 케이스
@@ -23,6 +16,20 @@
     drawSample()  카메라 없이 시험할 합성 문서 사진. 빈 화면의 "샘플로 시험해 보기"에서 호출
 -->
 <html lang="ko">
+<link rel="manifest" href="./manifest.webmanifest">
+<link rel="apple-touch-icon" href="./apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="주머니 스캐너">
+<meta name="theme-color" content="#171a21">
+<script>
+  if ('serviceWorker' in navigator) {
+    addEventListener('load', function () {
+      navigator.serviceWorker.register('./sw.js').catch(function () {});
+    });
+  }
+</script>
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
