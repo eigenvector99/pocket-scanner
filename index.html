@@ -29,6 +29,7 @@
     });
   }
 </script>
+<html lang="ko">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
@@ -37,17 +38,17 @@
 <meta name="theme-color" content="#0B1312" media="(prefers-color-scheme: dark)">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
-<meta name="apple-mobile-web-app-title" content="문서 스캐너 현수 Ver1.1">
+<meta name="apple-mobile-web-app-title" content="문서 스캐너 현수 Ver1.0">
 <meta name="description" content="카메라로 찍은 문서를 자동 보정해 PDF로 저장하는 웹앱">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230E7C6D'/%3E%3Crect x='9' y='7' width='14' height='18' rx='1.5' fill='%23fff'/%3E%3Cg fill='%230E7C6D'%3E%3Crect x='12' y='11' width='8' height='1.6'/%3E%3Crect x='12' y='15' width='8' height='1.6'/%3E%3Crect x='12' y='19' width='5' height='1.6'/%3E%3C/g%3E%3C/svg%3E">
 <style>
-
+  /* Claude 아티팩트가 자동으로 넣어주던 기본값 — 단독 파일이라 직접 넣는다 */
   html{color-scheme:light dark}
   body{margin:0}
   img{max-width:100%}
   [hidden]{display:none!important}
 </style>
-<title>문서 스캐너 현수 Ver1.1</title>
+<title>문서 스캐너 현수 Ver1.0</title>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans+KR:wght@300;400;500;600&display=swap">
 <style>
@@ -298,7 +299,7 @@ button{font:inherit;color:inherit;cursor:pointer}
 <body>
 <div class="shell">
   <header class="top">
-    <h1 class="brand">문서 스캐너 현수<span class="ver">Ver1.1</span></h1>
+    <h1 class="brand">문서 스캐너 현수<span class="ver">Ver1.0</span></h1>
     <span class="count mono">담긴 문서 <b id="cnt">0</b>장</span>
   </header>
 
@@ -1149,7 +1150,10 @@ async function savePdf() {
   try {
     const file = new File([blob], filename, { type: "application/pdf" });
     if (navigator.canShare && navigator.canShare({ files: [file] })) {
-      await navigator.share({ files: [file], title: filename });
+      // files만 넘긴다. title이나 text를 함께 주면 iOS가 그 문자열을 별개의
+      // 공유 항목으로 취급해서, "파일에 저장" 때 PDF 옆에 그 문자열이 담긴
+      // 텍스트 파일이 하나 더 저장된다. 파일 이름은 File 객체가 이미 갖고 있다.
+      await navigator.share({ files: [file] });
       say(done + " 공유했습니다.");
       return;
     }
